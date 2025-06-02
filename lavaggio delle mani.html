@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sito sul lavaggio mani per l'Operatore Socio-Sanitario (OSS): scopri tecniche, momenti e quiz interattivi.">
+    <meta name="keywords" content="lavaggio mani, OSS, igiene, flora batterica, quiz lavaggio mani">
+    <title>Lavaggio Mani Operatore</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0d1b2a, #1b263b);
+            color: #e0e0e0;
+            overflow-x: hidden;
+            position: relative;
+            font-size: 18px;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/circuit-pattern.png');
+            opacity: 0.05;
+            z-index: -1;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            position: relative;
+        }
+        header {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 3.5em;
+            color: #00d4ff;
+            text-shadow: 0 0 10px #00d4ff;
+            animation: glow 2s infinite alternate;
+        }
+        header p {
+            margin: 10px 0 0;
+            font-size: 1.2em;
+            color: #ecf0f1;
+        }
+        nav {
+            background: #34495e;
+            padding: 10px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1.2em;
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: #3498db;
+        }
+        section {
+            background: rgba(20, 40, 60, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+            margin-bottom: 50px;
+            animation: fadeIn 1.5s ease-in;
+            border: 1px solid #00d4ff;
+        }
+        section h2 {
+            color: #00d4ff;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 5px #00d4ff;
+        }
+        section h3 {
+            color: #00d4ff;
+            font-size: 1.5em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        section p, section ul {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        section ul {
+            list-style-type: disc;
+            padding-left: 40px;
+        }
+        section ul ul {
+            list-style-type: circle;
+            padding-left: 30px;
+        }
+        .quiz-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .quiz-selector {
+            margin-bottom: 20px;
+        }
+        .quiz-selector select {
+            padding: 10px;
+            font-size: 1.2em;
+            background: rgba(30, 50, 70, 0.95);
+            color: #e0e0e0;
+            border: 1px solid #00d4ff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .quiz-timer {
+            font-size: 1.5em;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+        .quiz-balls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .quiz-ball {
+            width: 40px;
+            height: 40px;
+            background: rgba(30, 50, 70, 0.95);
+            border: 2px solid #00d4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1em;
+            color: #e0e0e0;
+            transition: background 0.3s ease;
+        }
+        .quiz-ball.correct {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        .quiz-ball.incorrect {
+            background: #ff0000;
+            color: #000;
+            box-shadow: 0 0 10px #ff0000;
+        }
+        .quiz-question {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+        .quiz-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .quiz-option {
+            background: rgba(30, 50, 70, 0.95);
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: 1px solid #00d4ff;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 1.1em;
+        }
+        .quiz-option:hover {
+            background: rgba(0, 212, 255, 0.3);
+        }
+        .quiz-feedback {
+            margin-top: 20px;
+            font-size: 1.2em;
+            display: none;
+        }
+        .correct {
+            color: #00ff00;
+        }
+        .incorrect {
+            color: #ff0000;
+        }
+        .quiz-result {
+            margin-top: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .retry-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: #00d4ff;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .retry-button:hover {
+            background: #3498db;
+        }
+        footer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #00d4ff, 0 0 10px #00d4ff; }
+            to { text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff; }
+        }
+        @media (max-width: 768px) {
+            nav a {
+                display: block;
+                margin: 10px 0;
+            }
+            section {
+                padding: 20px;
+            }
+            header h1 {
+                font-size: 2.5em;
+            }
+            header p {
+                font-size: 1em;
+            }
+            .quiz-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .quiz-ball {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Lavaggio Mani Operatore</h1>
+        <p>Tecniche e Momenti per l'OSS</p>
+    </header>
+
+    <nav>
+        <a href="#introduzione">Introduzione</a>
+        <a href="#momenti">5 Momenti</a>
+        <a href="#tipi">Tipi di Lavaggio</a>
+        <a href="#flora">Flora Batterica</a>
+        <a href="#quiz">Quiz</a>
+    </nav>
+
+    <div class="container">
+        <section id="introduzione">
+            <h2>Introduzione al Lavaggio Mani</h2>
+            <p>Il lavaggio delle mani è fondamentale per prevenire le infezioni, poiché le mani sono un veicolo primario di trasmissione di microrganismi. Sulle mani troviamo flora batterica transitoria e residente. Il lavaggio sociale elimina la flora transitoria, riducendo il rischio infettivo.</p>
+        </section>
+
+        <section id="momenti">
+            <h2>I 5 Momenti per l'Igiene delle Mani</h2>
+            <ul>
+                <li><strong>Prima del contatto con il paziente:</strong> Stringere la mano, aiutare a camminare, massaggi.</li>
+                <li><strong>Prima di una manovra asettica:</strong> Igiene orale, medicazioni, iniezioni.</li>
+                <li><strong>Dopo esposizione a liquidi biologici:</strong> Pulizia di urine, feci, vomito, rifiuti contaminati.</li>
+                <li><strong>Dopo il contatto con il paziente:</strong> Misurare pressione, auscultare torace.</li>
+                <li><strong>Dopo contatto con l’ambiente del paziente:</strong> Cambiare lenzuola, regolare sponde del letto.</li>
+            </ul>
+        </section>
+
+        <section id="tipi">
+            <h2>Tipi di Lavaggio Mani</h2>
+            <h3>Lavaggio Sociale</h3>
+            <p>Durata: 40-60 secondi. Materiale: sapone liquido, salviette monouso. Rimuove la flora transitoria.</p>
+            <h3>Lavaggio Antisettico</h3>
+            <p>Durata: ~90 secondi. Materiale: detergente antisettico. Usato prima/dopo procedure invasive o contatto con patogeni.</p>
+            <h3>Lavaggio Chirurgico</h3>
+            <p>Durata: ~5 minuti. Materiale: kit antisettico con spazzola. Riduce al minimo la flora batterica prima di interventi.</p>
+            <h3>Soluzione Idroalcolica</h3>
+            <p>Durata: 20-30 secondi. Efficace, veloce, non richiede acqua. Ideale per mani non visibilmente sporche.</p>
+            <p><strong>Note:</strong> Vietati unghie artificiali, anelli, bracciali e orologi. Unghie naturali corte.</p>
+        </section>
+
+        <section id="flora">
+            <h2>Flora Batterica delle Mani</h2>
+            <ul>
+                <li><strong>Residente:</strong> Negli strati profondi, non rimovibile con lavaggio semplice (es. Staphylococcus epidermidis).</li>
+                <li><strong>Transitoria:</strong> Superficiale, rimovibile con igiene, acquisita da contatto con pazienti o ambiente.</li>
+            </ul>
+        </section>
+
+        <section id="quiz">
+            <h2>Quiz: Testa le Tue Conoscenze sul Lavaggio Mani</h2>
+            <p>Seleziona un quiz e rispondi alle 30 domande entro 30 minuti. Le palline si illumineranno man mano che procedi!</p>
+            <div class="quiz-container">
+                <div class="quiz-selector">
+                    <select id="quiz-select" onchange="selectQuiz()">
+                        <option value="0">Seleziona un Quiz</option>
+                        <option value="1">Quiz 1</option>
+                        <option value="2">Quiz 2</option>
+                        <option value="3">Quiz 3</option>
+                        <option value="4">Quiz 4</option>
+                        <option value="5">Quiz 5</option>
+                    </select>
+                </div>
+                <div class="quiz-timer" id="quiz-timer" style="display: none;">Tempo rimanente: 30:00</div>
+                <div class="quiz-balls" id="quiz-balls" style="display: none;"></div>
+                <div class="quiz-question" id="quiz-question"></div>
+                <div class="quiz-options" id="quiz-options"></div>
+                <div class="quiz-feedback" id="quiz-feedback"></div>
+                <div class="quiz-result" id="quiz-result"></div>
+                <button class="retry-button" id="retry-button" style="display: none;">Riprova</button>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2025 Lavaggio Mani Operatore - Tutti i diritti riservati</p>
+    </footer>
+
+    <script>
+        const allQuestions = [
+            // Quiz 1
+            [
+                { question: "Perché è importante il lavaggio delle mani?", options: ["Previene infezioni", "Migliora la circolazione", "Rimuove il grasso", "Idrata la pelle"], correct: "Previene infezioni" },
+                { question: "Quale flora batterica viene eliminata dal lavaggio sociale?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" },
+                { question: "Qual è uno dei 5 momenti per l’igiene delle mani?", options: ["Prima del contatto con il paziente", "Durante il pranzo", "Dopo aver scritto", "Prima di dormire"], correct: "Prima del contatto con il paziente" },
+                { question: "Quanto dura il lavaggio sociale?", options: ["40-60 secondi", "90 secondi", "5 minuti", "30 secondi"], correct: "40-60 secondi" },
+                { question: "Quale materiale è usato nel lavaggio sociale?", options: ["Sapone liquido", "Clorexidina", "Spazzola sterile", "Soluzione idroalcolica"], correct: "Sapone liquido" },
+                { question: "Quando si esegue il lavaggio antisettico?", options: ["Prima di procedure invasive", "Prima di mangiare", "Dopo aver salutato", "Durante un massaggio"], correct: "Prima di procedure invasive" },
+                { question: "Qual è la durata del lavaggio antisettico?", options: ["~90 secondi", "40-60 secondi", "5 minuti", "20-30 secondi"], correct: "~90 secondi" },
+                { question: "Quale momento richiede l’igiene dopo contatto con liquidi biologici?", options: ["Dopo esposizione a urine", "Prima di un massaggio", "Durante una visita", "Prima di cambiare lenzuola"], correct: "Dopo esposizione a urine" },
+                { question: "Quale tipo di lavaggio è necessario prima di un intervento chirurgico?", options: ["Chirurgico", "Sociale", "Antisettico", "Idroalcolico"], correct: "Chirurgico" },
+                { question: "Quanto dura il lavaggio chirurgico?", options: ["5 minuti", "90 secondi", "40-60 secondi", "30 secondi"], correct: "5 minuti" },
+                { question: "Quale flora batterica è negli strati profondi della cute?", options: ["Residente", "Transitoria", "Entrambe", "Nessuna"], correct: "Residente" },
+                { question: "Quale azione è vietata per gli operatori?", options: ["Indossare anelli", "Tenere unghie corte", "Usare sapone liquido", "Asciugare con salviette"], correct: "Indossare anelli" },
+                { question: "Quale momento include il contatto con l’ambiente del paziente?", options: ["Regolare sponde del letto", "Misurare la pressione", "Somministrare collirio", "Aspirare secrezioni"], correct: "Regolare sponde del letto" },
+                { question: "Quale prodotto è usato nella soluzione idroalcolica?", options: ["Alcol 60-80%", "Sapone liquido", "Clorexidina", "Acqua"], correct: "Alcol 60-80%" },
+                { question: "Quale passo è incluso nel lavaggio sociale?", options: ["Frizionare per 10 secondi", "Spazzolare le unghie", "Lasciare antisettico 2 minuti", "Usare soluzione idroalcolica"], correct: "Frizionare per 10 secondi" },
+                { question: "Quale flora è rimovibile con il lavaggio semplice?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" },
+                { question: "Quale strumento è preferibile per il lavaggio?", options: ["Rubinetto a gomito", "Rubinetto manuale", "Spazzola manuale", "Dispenser a pressione"], correct: "Rubinetto a gomito" },
+                { question: "Quale momento avviene dopo la visita clinica?", options: ["Dopo contatto con il paziente", "Prima di una manovra asettica", "Prima del contatto", "Dopo contatto con l’ambiente"], correct: "Dopo contatto con il paziente" },
+                { question: "Quale batterio domina la flora residente?", options: ["Staphylococcus epidermidis", "E. coli", "Streptococcus", "Pseudomonas"], correct: "Staphylococcus epidermidis" },
+                { question: "Quale lavaggio usa una spazzola sterile?", options: ["Chirurgico", "Sociale", "Antisettico", "Idroalcolico"], correct: "Chirurgico" },
+                { question: "Quanto tempo richiede la soluzione idroalcolica?", options: ["20-30 secondi", "90 secondi", "5 minuti", "40-60 secondi"], correct: "20-30 secondi" },
+                { question: "Quale passo è nel lavaggio antisettico?", options: ["Lasciare antisettico 1 minuto", "Frizionare 10 secondi", "Spazzolare le unghie", "Usare sapone liquido"], correct: "Lasciare antisettico 1 minuto" },
+                { question: "Quale attività richiede igiene prima di una manovra asettica?", options: ["Medicazione ferite", "Stringere la mano", "Regolare un allarme", "Misurare la pressione"], correct: "Medicazione ferite" },
+                { question: "Quale vantaggio ha la soluzione idroalcolica?", options: ["Non richiede acqua", "Dura 5 minuti", "Usa spazzole sterili", "Rimuove flora residente"], correct: "Non richiede acqua" },
+                { question: "Quale momento include la pulizia di rifiuti contaminati?", options: ["Dopo esposizione a liquidi biologici", "Prima del contatto", "Dopo contatto con l’ambiente", "Prima di una manovra"], correct: "Dopo esposizione a liquidi biologici" },
+                { question: "Quale tipo di lavaggio è per attività a basso rischio?", options: ["Sociale", "Antisettico", "Chirurgico", "Idroalcolico"], correct: "Sociale" },
+                { question: "Quale flora causa raramente infezioni?", options: ["Residente", "Transitoria", "Entrambe", "Nessuna"], correct: "Residente" },
+                { question: "Quale passo è nella soluzione idroalcolica?", options: ["Strofinare palmi tra loro", "Spazzolare le unghie", "Sciacquare con acqua", "Asciugare con salviette"], correct: "Strofinare palmi tra loro" },
+                { question: "Quale lavaggio è per pazienti in isolamento?", options: ["Antisettico", "Sociale", "Chirurgico", "Idroalcolico"], correct: "Antisettico" },
+                { question: "Quale regola vale per le unghie?", options: ["Tenere corte", "Usare artificiali", "Tenere lunghe", "Decorare"], correct: "Tenere corte" }
+            ],
+            // Quiz 2
+            [
+                { question: "Quale flora batterica è superficiale?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" },
+                { question: "Quale momento include aiutare un paziente a camminare?", options: ["Prima del contatto con il paziente", "Dopo esposizione a liquidi", "Prima di una manovra asettica", "Dopo contatto con l’ambiente"], correct: "Prima del contatto con il paziente" },
+                { question: "Quale lavaggio dura circa 90 secondi?", options: ["Antisettico", "Sociale", "Chirurgico", "Idroalcolico"], correct: "Antisettico" },
+                { question: "Quale materiale è usato nel lavaggio chirurgico?", options: ["Spazzola sterile", "Sapone liquido", "Soluzione idroalcolica", "Salviette comuni"], correct: "Spazzola sterile" },
+                { question: "Quale momento richiede igiene dopo aver cambiato lenzuola?", options: ["Dopo contatto con l’ambiente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con l’ambiente" },
+                { question: "Quale flora è difficile da rimuovere?", options: ["Residente", "Transitoria", "Entrambe", "Nessuna"], correct: "Residente" },
+                { question: "Quale azione è vietata per gli OSS?", options: ["Indossare bracciali", "Usare salviette monouso", "Tenere unghie corte", "Frizionare le mani"], correct: "Indossare bracciali" },
+                { question: "Quale passo è nel lavaggio chirurgico?", options: ["Spazzolare le unghie", "Frizionare 10 secondi", "Usare sapone liquido", "Strofinare palmi"], correct: "Spazzolare le unghie" },
+                { question: "Quale lavaggio è per unità ad alto rischio?", options: ["Antisettico", "Sociale", "Chirurgico", "Idroalcolico"], correct: "Antisettico" },
+                { question: "Quale concentrazione di alcol è più efficace?", options: ["60-80%", "20-30%", "90-100%", "40-50%"], correct: "60-80%" },
+                { question: "Quale momento include l’aspirazione di secrezioni?", options: ["Prima di una manovra asettica", "Dopo contatto con il paziente", "Prima del contatto", "Dopo contatto con l’ambiente"], correct: "Prima di una manovra asettica" },
+                { question: "Quale lavaggio sociale usa salviette monouso?", options: ["Sociale", "Antisettico", "Chirurgico", "Idroalcolico"], correct: "Sociale" },
+                { question: "Quale flora si acquisisce da contatto con pazienti?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" },
+                { question: "Quale momento segue la misurazione della pressione?", options: ["Dopo contatto con il paziente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con il paziente" },
+                { question: "Quale lavaggio richiede 5 minuti?", options: ["Chirurgico", "Sociale", "Antisettico", "Idroalcolico"], correct: "Chirurgico" },
+                { question: "Quale passo è nella soluzione idroalcolica?", options: ["Frizionare dorsi delle dita", "Sciacquare con acqua", "Spazzolare le unghie", "Asciugare con salviette"], correct: "Frizionare dorsi delle dita" },
+                { question: "Quale materiale è preferibile per il lavaggio antisettico?", options: ["Detergente antisettico", "Sapone liquido", "Spazzola sterile", "Soluzione idroalcolica"], correct: "Detergente antisettico" },
+                { question: "Quale momento include la pulizia di vomito?", options: ["Dopo esposizione a liquidi biologici", "Prima del contatto", "Dopo contatto con l’ambiente", "Prima di una manovra"], correct: "Dopo esposizione a liquidi biologici" },
+                { question: "Quale lavaggio è più veloce?", options: ["Idroalcolico", "Sociale", "Antisettico", "Chirurgico"], correct: "Idroalcolico" },
+                { question: "Quale regola vale per gli orologi?", options: ["Vietati", "Permessi", "Solo al polso sinistro", "Solo digitali"], correct: "Vietati" },
+                { question: "Quale flora è nello strato superficiale?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" },
+                { question: "Quale passo è nel lavaggio antisettico?", options: ["Detergere avambracci", "Frizionare 10 secondi", "Usare spazzola", "Strofinare palmi"], correct: "Detergere avambracci" },
+                { question: "Quale momento include stringere la mano?", options: ["Prima del contatto con il paziente", "Dopo esposizione a liquidi", "Prima di una manovra", "Dopo contatto con l’ambiente"], correct: "Prima del contatto con il paziente" },
+                { question: "Quale lavaggio è per interventi chirurgici?", options: ["Chirurgico", "Sociale", "Antisettico", "Idroalcolico"], correct: "Chirurgico" },
+                { question: "Quale vantaggio ha la soluzione idroalcolica?", options: ["Meno irritazioni", "Dura più a lungo", "Rimuove flora residente", "Richiede spazzole"], correct: "Meno irritazioni" },
+                { question: "Quale flora è dominata da Staphylococcus epidermidis?", options: ["Residente", "Transitoria", "Entrambe", "Nessuna"], correct: "Residente" },
+                { question: "Quale passo è nel lavaggio sociale?", options: ["Chiudere rubinetto con salvietta", "Spazzolare le unghie", "Lasciare antisettico 1 minuto", "Frizionare dorsi"], correct: "Chiudere rubinetto con salvietta" },
+                { question: "Quale momento include regolare un allarme?", options: ["Dopo contatto con l’ambiente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con l’ambiente" },
+                { question: "Quale lavaggio è per attività assistenziali?", options: ["Sociale", "Antisettico", "Chirurgico", "Idroalcolico"], correct: "Sociale" },
+                { question: "Quale batterio è tipico della flora residente?", options: ["Staphylococcus epidermidis", "E. coli", "Streptococcus", "Pseudomonas"], correct: "Staphylococcus epidermidis" }
+            ],
+            // Quiz 3
+            [
+                { question: "Quale momento include la somministrazione di collirio?", options: ["Prima di una manovra asettica", "Dopo contatto con il paziente", "Prima del contatto", "Dopo contatto con l’ambiente"], correct: "Prima di una manovra asettica" },
+                { question: "Quale lavaggio rimuove la flora transitoria?", options: ["Sociale", "Chirurgico", "Entrambi", "Nessuno"], correct: "Sociale" },
+                { question: "Quale passo è nel lavaggio chirurgico?", options: ["Lavare fino al gomito", "Frizionare 10 secondi", "Usare sapone liquido", "Strofinare palmi"], correct: "Lavare fino al gomito" },
+                { question: "Quale flora è negli strati profondi?", options: ["Residente", "Transitoria", "Entrambe", "Nessuna"], correct: "Residente" },
+                { question: "Quale momento include la palpazione addominale?", options: ["Dopo contatto con il paziente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con il paziente" },
+                { question: "Quale lavaggio dura 20-30 secondi?", options: ["Idroalcolico", "Sociale", "Antisettico", "Chirurgico"], correct: "Idroalcolico" },
+                { question: "Quale materiale è usato nel lavaggio antisettico?", options: ["Detergente antisettico", "Sapone liquido", "Spazzola sterile", "Soluzione idroalcolica"], correct: "Detergente antisettico" },
+                { question: "Quale regola vieta le unghie artificiali?", options: ["Norme igieniche", "Norme estetiche", "Norme di sicurezza", "Norme personali"], correct: "Norme igieniche" },
+                { question: "Quale momento include la pulizia di feci?", options: ["Dopo esposizione a liquidi biologici", "Prima del contatto", "Dopo contatto con l’ambiente", "Prima di una manovra"], correct: "Dopo esposizione a liquidi biologici" },
+                { question: "Quale lavaggio è per basso rischio infettivo?", options: ["Sociale", "Antisettico", "Chirurgico", "Idroalcolico"], correct: "Sociale" },
+                { question: "Quale passo è nella soluzione idroalcolica?", options: ["Ruotare punta delle dita", "Sciacquare con acqua", "Spazzolare le unghie", "Asciugare con salviette"], correct: "Ruotare punta delle dita" },
+                { question: "Quale flora si deposita da contatto con l’ambiente?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" },
+                { question: "Quale momento include un massaggio?", options: ["Prima del contatto con il paziente", "Dopo esposizione a liquidi", "Prima di una manovra", "Dopo contatto con l’ambiente"], correct: "Prima del contatto con il paziente" },
+                { question: "Quale lavaggio usa clorexidina?", options: ["Chirurgico", "Sociale", "Antisettico", "Idroalcolico"], correct: "Chirurgico" },
+                { question: "Quale vantaggio ha la soluzione idroalcolica?", options: ["Azione antimicrobica", "Richiede acqua", "Dura 5 minuti", "Usa spazzole"], correct: "Azione antimicrobica" },
+                { question: "Quale flora è superficiale?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" },
+                { question: "Quale passo è nel lavaggio antisettico?", options: ["Frizionare bene", "Spazzolare le unghie", "Usare sapone liquido", "Strofinare palmi"], correct: "Frizionare bene" },
+                { question: "Quale momento include regolare la velocità di infusione?", options: ["Dopo contatto con l’ambiente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con l’ambiente" },
+                { question: "Quale lavaggio è per contatto con patogeni?", options: ["Antisettico", "Sociale", "Chirurgico", "Idroalcolico"], correct: "Antisettico" },
+                { question: "Quale regola vale per i bracciali?", options: ["Vietati", "Permessi", "Solo in plastica", "Solo al polso destro"], correct: "Vietati" },
+                { question: "Quale flora causa raramente infezioni?", options: ["Residente", "Transitoria", "Entrambe", "Nessuna"], correct: "Residente" },
+                { question: "Quale passo è nel lavaggio sociale?", options: ["Asciugare tamponando", "Spazzolare le unghie", "Lasciare antisettico 2 minuti", "Frizionare dorsi"], correct: "Asciugare tamponando" },
+                { question: "Quale momento include l’igiene orale?", options: ["Prima di una manovra asettica", "Dopo contatto con il paziente", "Prima del contatto", "Dopo contatto con l’ambiente"], correct: "Prima di una manovra asettica" },
+                { question: "Quale lavaggio dura 40-60 secondi?", options: ["Sociale", "Antisettico", "Chirurgico", "Idroalcolico"], correct: "Sociale" },
+                { question: "Quale materiale è nel lavaggio chirurgico?", options: ["Telino sterile", "Sapone liquido", "Soluzione idroalcolica", "Salviette comuni"], correct: "Telino sterile" },
+                { question: "Quale momento include la misurazione del polso?", options: ["Dopo contatto con il paziente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con il paziente" },
+                { question: "Quale lavaggio è più efficace con alcol 60-80%?", options: ["Idroalcolico", "Sociale", "Antisettico", "Chirurgico"], correct: "Idroalcolico" },
+                { question: "Quale passo è nella soluzione idroalcolica?", options: ["Intrecciare le dita", "Sciacquare con acqua", "Spazzolare le unghie", "Asciugare con salviette"], correct: "Intrecciare le dita" },
+                { question: "Quale flora è tipica di Staphylococcus epidermidis?", options: ["Residente", "Transitoria", "Entrambe", "Nessuna"], correct: "Residente" },
+                { question: "Quale momento include la pulizia del comodino?", options: ["Dopo contatto con l’ambiente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con l’ambiente" }
+            ],
+            // Quiz 4
+            [
+                { question: "Quale lavaggio è per pazienti in isolamento?", options: ["Antisettico", "Sociale", "Chirurgico", "Idroalcolico"], correct: "Antisettico" },
+                { question: "Quale flora è rimovibile con igiene routinaria?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" },
+                { question: "Quale momento include l’iniezione sottocutanea?", options: ["Prima di una manovra asettica", "Dopo contatto con il paziente", "Prima del contatto", "Dopo contatto con l’ambiente"], correct: "Prima di una manovra asettica" },
+                { question: "Quale lavaggio dura circa 5 minuti?", options: ["Chirurgico", "Sociale", "Antisettico", "Idroalcolico"], correct: "Chirurgico" },
+                { question: "Quale passo è nel lavaggio antisettico?", options: ["Sciacquare residui", "Frizionare 10 secondi", "Spazzolare le unghie", "Usare sapone liquido"], correct: "Sciacquare residui" },
+                { question: "Quale flora è profonda nella cute?", options: ["Residente", "Transitoria", "Entrambe", "Nessuna"], correct: "Residente" },
+                { question: "Quale momento include la manipolazione di bendaggi?", options: ["Dopo esposizione a liquidi biologici", "Prima del contatto", "Dopo contatto con l’ambiente", "Prima di una manovra"], correct: "Dopo esposizione a liquidi biologici" },
+                { question: "Quale regola vieta gli anelli?", options: ["Norme igieniche", "Norme estetiche", "Norme di sicurezza", "Norme personali"], correct: "Norme igieniche" },
+                { question: "Quale lavaggio è per attività assistenziali a basso rischio?", options: ["Sociale", "Antisettico", "Chirurgico", "Idroalcolico"], correct: "Sociale" },
+                { question: "Quale passo è nella soluzione idroalcolica?", options: ["Frizionare pollice", "Spazzolare le unghie", "Sciacquare con acqua", "Asciugare con salviette"], correct: "Frizionare pollice" },
+                { question: "Quale momento include auscultare il torace?", options: ["Dopo contatto con il paziente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con il paziente" },
+                { question: "Quale lavaggio usa sapone liquido?", options: ["Sociale", "Antisettico", "Chirurgico", "Idroalcolico"], correct: "Sociale" },
+                { question: "Quale flora si deposita da contatto con dispositivi?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" },
+                { question: "Quale momento include aiutare a lavarsi?", options: ["Prima del contatto con il paziente", "Dopo esposizione a liquidi", "Prima di una manovra", "Dopo contatto con l’ambiente"], correct: "Prima del contatto con il paziente" },
+                { question: "Quale lavaggio richiede una durata di 90 secondi?", options: ["Antisettico", "Sociale", "Chirurgico", "Idroalcolico"], correct: "Antisettico" },
+                { question: "Quale vantaggio ha la soluzione idroalcolica?", options: ["Disponibile al letto", "Richiede acqua", "Dura 5 minuti", "Usa spazzole"], correct: "Disponibile al letto" },
+                { question: "Quale flora è superficiale sulla cute?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" },
+                { question: "Quale passo è nel lavaggio chirurgico?", options: ["Frizionare 2 minuti", "Frizionare 10 secondi", "Usare sapone liquido", "Strofinare palmi"], correct: "Frizionare 2 minuti" },
+                { question: "Quale momento include cambiare le lenzuola?", options: ["Dopo contatto con l’ambiente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con l’ambiente" },
+                { question: "Quale lavaggio è per procedure invasive?", options: ["Antisettico", "Sociale", "Chirurgico", "Idroalcolico"], correct: "Antisettico" },
+                { question: "Quale regola vale per gli orologi?", options: ["Vietati", "Permessi", "Solo in plastica", "Solo al polso sinistro"], correct: "Vietati" },
+                { question: "Quale flora causa raramente infezioni?", options: ["Residente", "Transitoria", "Entrambe", "Nessuna"], correct: "Residente" },
+                { question: "Quale passo è nel lavaggio sociale?", options: ["Bagnare mani e polsi", "Spazzolare le unghie", "Lasciare antisettico 1 minuto", "Frizionare dorsi"], correct: "Bagnare mani e polsi" },
+                { question: "Quale momento include la medicazione di ferite?", options: ["Prima di una manovra asettica", "Dopo contatto con il paziente", "Prima del contatto", "Dopo contatto con l’ambiente"], correct: "Prima di una manovra asettica" },
+                { question: "Quale lavaggio dura 20-30 secondi?", options: ["Idroalcolico", "Sociale", "Antisettico", "Chirurgico"], correct: "Idroalcolico" },
+                { question: "Quale materiale è nel lavaggio antisettico?", options: ["Salviette monouso", "Sapone liquido", "Spazzola sterile", "Soluzione idroalcolica"], correct: "Salviette monouso" },
+                { question: "Quale momento include la pulizia di urine?", options: ["Dopo esposizione a liquidi biologici", "Prima del contatto", "Dopo contatto con l’ambiente", "Prima di una manovra"], correct: "Dopo esposizione a liquidi biologici" },
+                { question: "Quale lavaggio è più efficace con alcol?", options: ["Idroalcolico", "Sociale", "Antisettico", "Chirurgico"], correct: "Idroalcolico" },
+                { question: "Quale passo è nella soluzione idroalcolica?", options: ["Strofinare dorso sinistro", "Spazzolare le unghie", "Sciacquare con acqua", "Asciugare con salviette"], correct: "Strofinare dorso sinistro" },
+                { question: "Quale flora è tipica di Staphylococcus epidermidis?", options: ["Residente", "Transitoria", "Entrambe", "Nessuna"], correct: "Residente" }
+            ],
+            // Quiz 5
+            [
+                { question: "Quale momento include monitorare un allarme?", options: ["Dopo contatto con l’ambiente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con l’ambiente" },
+                { question: "Quale flora è rimossa dal lavaggio sociale?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" },
+                { question: "Quale lavaggio è per interventi chirurgici?", options: ["Chirurgico", "Sociale", "Antisettico", "Idroalcolico"], correct: "Chirurgico" },
+                { question: "Quale passo è nella soluzione idroalcolica?", options: ["Ruotare dita sul palmo", "Spazzolare le unghie", "Sciacquare con acqua", "Asciugare con salviette"], correct: "Ruotare dita sul palmo" },
+                { question: "Quale momento include l’auscultazione del torace?", options: ["Dopo contatto con il paziente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con il paziente" },
+                { question: "Quale lavaggio dura 40-60 secondi?", options: ["Sociale", "Antisettico", "Chirurgico", "Idroalcolico"], correct: "Sociale" },
+                { question: "Quale materiale è usato nel lavaggio sociale?", options: ["Salviette monouso", "Clorexidina", "Spazzola sterile", "Soluzione idroalcolica"], correct: "Salviette monouso" },
+                { question: "Quale regola vieta i bracciali?", options: ["Norme igieniche", "Norme estetiche", "Norme di sicurezza", "Norme personali"], correct: "Norme igieniche" },
+                { question: "Quale momento include la pulizia di vomito?", options: ["Dopo esposizione a liquidi biologici", "Prima del contatto", "Dopo contatto con l’ambiente", "Prima di una manovra"], correct: "Dopo esposizione a liquidi biologici" },
+                { question: "Quale lavaggio è per basso rischio?", options: ["Sociale", "Antisettico", "Chirurgico", "Idroalcolico"], correct: "Sociale" },
+                { question: "Quale flora è difficile da rimuovere con lavaggio semplice?", options: ["Residente", "Transitoria", "Entrambe", "Nessuna"], correct: "Residente" },
+                { question: "Quale momento include un massaggio?", options: ["Prima del contatto con il paziente", "Dopo esposizione a liquidi", "Prima di una manovra", "Dopo contatto con l’ambiente"], correct: "Prima del contatto con il paziente" },
+                { question: "Quale lavaggio usa detergente antisettico?", options: ["Antisettico", "Sociale", "Chirurgico", "Idroalcolico"], correct: "Antisettico" },
+                { question: "Quale vantaggio ha la soluzione idroalcolica?", options: ["Veloce", "Richiede acqua", "Dura 5 minuti", "Usa spazzole"], correct: "Veloce" },
+                { question: "Quale flora è superficiale?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" },
+                { question: "Quale passo è nel lavaggio chirurgico?", options: ["Asciugare con telino sterile", "Frizionare 10 secondi", "Usare sapone liquido", "Strofinare palmi"], correct: "Asciugare con telino sterile" },
+                { question: "Quale momento include l’igiene delle lesioni cutanee?", options: ["Prima di una manovra asettica", "Dopo contatto con il paziente", "Prima del contatto", "Dopo contatto con l’ambiente"], correct: "Prima di una manovra asettica" },
+                { question: "Quale lavaggio dura circa 90 secondi?", options: ["Antisettico", "Sociale", "Chirurgico", "Idroalcolico"], correct: "Antisettico" },
+                { question: "Quale materiale è nel lavaggio chirurgico?", options: ["Iodopovidone", "Sapone liquido", "Soluzione idroalcolica", "Salviette comuni"], correct: "Iodopovidone" },
+                { question: "Quale momento include la manipolazione di pannolini?", options: ["Dopo esposizione a liquidi biologici", "Prima del contatto", "Dopo contatto con l’ambiente", "Prima di una manovra"], correct: "Dopo esposizione a liquidi biologici" },
+                { question: "Quale lavaggio è più efficace senza acqua?", options: ["Idroalcolico", "Sociale", "Antisettico", "Chirurgico"], correct: "Idroalcolico" },
+                { question: "Quale passo è nel lavaggio antisettico?", options: ["Bagnare polsi", "Spazzolare le unghie", "Usare sapone liquido", "Strofinare palmi"], correct: "Bagnare polsi" },
+                { question: "Quale flora è tipica di Staphylococcus epidermidis?", options: ["Residente", "Transitoria", "Entrambe", "Nessuna"], correct: "Residente" },
+                { question: "Quale momento include regolare le sponde del letto?", options: ["Dopo contatto con l’ambiente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con l’ambiente" },
+                { question: "Quale lavaggio è per alto rischio?", options: ["Antisettico", "Sociale", "Chirurgico", "Idroalcolico"], correct: "Antisettico" },
+                { question: "Quale regola vale per le unghie?", options: ["Tenere corte", "Usare artificiali", "Tenere lunghe", "Decorare"], correct: "Tenere corte" },
+                { question: "Quale passo è nel lavaggio sociale?", options: ["Insaponare bene", "Spazzolare le unghie", "Lasciare antisettico 2 minuti", "Frizionare dorsi"], correct: "Insaponare bene" },
+                { question: "Quale momento include la misurazione della pressione?", options: ["Dopo contatto con il paziente", "Prima del contatto", "Dopo esposizione a liquidi", "Prima di una manovra"], correct: "Dopo contatto con il paziente" },
+                { question: "Quale lavaggio dura 5 minuti?", options: ["Chirurgico", "Sociale", "Antisettico", "Idroalcolico"], correct: "Chirurgico" },
+                { question: "Quale flora si acquisisce da pazienti infetti?", options: ["Transitoria", "Residente", "Entrambe", "Nessuna"], correct: "Transitoria" }
+            ]
+        ];
+
+        let currentQuiz = null;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timeLeft = 30 * 60; // 30 minuti in secondi
+        let timerInterval;
+
+        const ballsContainer = document.getElementById('quiz-balls');
+        for (let i = 1; i <= 30; i++) {
+            const ball = document.createElement('div');
+            ball.className = 'quiz-ball';
+            ball.id = `ball-${i}`;
+            ball.innerText = i;
+            ballsContainer.appendChild(ball);
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('quiz-timer').innerText = `Tempo rimanente: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endQuiz();
+                }
+            }, 1000);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function selectQuiz() {
+            const quizSelect = document.getElementById('quiz-select');
+            const selectedQuiz = parseInt(quizSelect.value);
+            if (selectedQuiz === 0) {
+                document.getElementById('quiz-timer').style.display = 'none';
+                document.getElementById('quiz-balls').style.display = 'none';
+                document.getElementById('quiz-question').innerText = '';
+                document.getElementById('quiz-options').innerHTML = '';
+                document.getElementById('quiz-feedback').style.display = 'none';
+                document.getElementById('quiz-result').innerHTML = '';
+                document.getElementById('retry-button').style.display = 'none';
+                clearInterval(timerInterval);
+                return;
+            }
+
+            currentQuiz = selectedQuiz - 1;
+            resetQuiz();
+        }
+
+        function loadQuizQuestion() {
+            const questionElement = document.getElementById('quiz-question');
+            const optionsElement = document.getElementById('quiz-options');
+            const feedbackElement = document.getElementById('quiz-feedback');
+            const resultElement = document.getElementById('quiz-result');
+            const retryButton = document.getElementById('retry-button');
+
+            if (currentQuestionIndex >= currentQuestions.length) {
+                endQuiz();
+                return;
+            }
+
+            const currentQuestion = currentQuestions[currentQuestionIndex];
+            questionElement.innerText = `Domanda ${currentQuestionIndex + 1}: ${currentQuestion.question}`;
+            optionsElement.innerHTML = '';
+            feedbackElement.style.display = 'none';
+            resultElement.innerHTML = '';
+            retryButton.style.display = 'none';
+
+            const shuffledOptions = shuffleArray([...currentQuestion.options]);
+            shuffledOptions.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'quiz-option';
+                optionElement.innerText = option;
+                optionElement.addEventListener('click', () => checkAnswer(option, currentQuestion.correct));
+                optionsElement.appendChild(optionElement);
+            });
+        }
+
+        function checkAnswer(selected, correct) {
+            const feedbackElement = document.getElementById('quiz-feedback');
+            feedbackElement.style.display = 'block';
+            const currentBall = document.getElementById(`ball-${currentQuestionIndex + 1}`);
+            if (selected === correct) {
+                currentBall.classList.add('correct');
+                feedbackElement.innerText = 'Corretto! Ottimo lavoro!';
+                feedbackElement.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                currentBall.classList.add('incorrect');
+                feedbackElement.innerText = `Sbagliato. La risposta corretta è: ${correct}.`;
+                feedbackElement.className = 'quiz-feedback incorrect';
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuizQuestion();
+            }, 1500);
+        }
+
+        function endQuiz() {
+            clearInterval(timerInterval);
+            const questionElement = document.getElementById('quiz-question');
+            const optionsElement = document.getElementById('quiz-options');
+            const feedbackElement = document.getElementById('quiz-feedback');
+            const resultElement = document.getElementById('quiz-result');
+            const timerElement = document.getElementById('quiz-timer');
+            const retryButton = document.getElementById('retry-button');
+
+            questionElement.innerText = 'Quiz Completato!';
+            optionsElement.innerHTML = '';
+            feedbackElement.style.display = 'none';
+            timerElement.style.display = 'none';
+            retryButton.style.display = 'block';
+
+            if (score >= 21) {
+                resultElement.innerText = `Hai superato il test! Punteggio: ${score}/30`;
+                resultElement.style.color = '#00ff00';
+            } else {
+                resultElement.innerText = `Torna a studiare! Punteggio: ${score}/30`;
+                resultElement.style.color = '#ff0000';
+            }
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            timeLeft = 30 * 60;
+            document.getElementById('quiz-timer').style.display = 'block';
+            document.getElementById('quiz-timer').innerText = 'Tempo rimanente: 30:00';
+            document.getElementById('quiz-balls').style.display = 'flex';
+            document.querySelectorAll('.quiz-ball').forEach(ball => {
+                ball.classList.remove('correct');
+                ball.classList.remove('incorrect');
+            });
+            currentQuestions = shuffleArray([...allQuestions[currentQuiz]]);
+            clearInterval(timerInterval);
+            startTimer();
+            loadQuizQuestion();
+        }
+
+        document.getElementById('retry-button').addEventListener('click', resetQuiz);
+    </script>
+</body>
+</html>
